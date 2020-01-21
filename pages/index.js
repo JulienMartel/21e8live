@@ -4,8 +4,6 @@ import fetch from 'isomorphic-unfetch'
 
 class Home extends React.Component {
 
-
-
   static async getInitialProps() {
 
     function queryForAddress(address) {
@@ -20,8 +18,16 @@ class Home extends React.Component {
       return query;
     }
 
+    function hex2a(hexx) {
+      var hex = hexx.toString();//force conversion
+      var str = '';
+      for (var i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)
+          str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+      return str;
+  }
+
     function urlForQuery(query) {
-      let buff = new Buffer(JSON.stringify(query));
+      let buff = Buffer.from(JSON.stringify(query));
       var b64 = buff.toString('base64')
       var url = 
         "https://genesis.bitdb.network/q/1FnauZ9aUH2Bex6JzdcV4eNX7oLSSEbxtN/" +
@@ -50,7 +56,30 @@ class Home extends React.Component {
         })
         .then(function(r) {
           addys.Rs.push(r)
-          console.log(r.c.out.str)
+          
+          r.c[0].out.forEach(t => {
+            if (t.b0) {
+              if (t.b0.op) {
+                if (t.b0.op == 106) {
+                  let nextIsMB = false;
+
+                  (t.str.split(' ')).forEach(hex => {
+                    let ascii = hex2a(hex)
+                    console.log(ascii)
+
+                    if (nextIsMB) {
+                      console.log("MB User: " + ascii)
+                      nextIsMB = false
+                    }
+
+                    if (ascii == "mb_user") {
+                      nextIsMB = true
+                    }
+                  })
+                }
+              }
+            }
+          })
       });
     });
     return addys
