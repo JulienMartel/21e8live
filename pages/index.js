@@ -5,6 +5,7 @@ import fetch from 'isomorphic-unfetch'
 class Home extends React.Component {
 
   static async getInitialProps() {
+    let mbUsers = new Set();
 
     function queryForAddress(address) {
       var query = {
@@ -24,7 +25,7 @@ class Home extends React.Component {
       for (var i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)
           str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
       return str;
-  }
+    }
 
     function urlForQuery(query) {
       let buff = Buffer.from(JSON.stringify(query));
@@ -38,13 +39,11 @@ class Home extends React.Component {
 
     let hashes = 
     [
-      "21e80035418e117035071e6d0f6f91edb3fba4e5da7da519dfddb18161626bf6",
+      "21e800ee4ae497bb33b23ddca9e10b9264647e421247894d573e9aa0c7f2b5f6",
     ] 
-    
-    let addys = {Rs: []}
 
     hashes.forEach(address => {
-      // Attach API KEY as header
+      // Attach API KEY as header 
       var header = {
         headers: { key: "1GaZvZEVwCSTzG189pzbvJzteDnx3NRAAt" }
       };
@@ -55,8 +54,6 @@ class Home extends React.Component {
           return r.json();
         })
         .then(function(r) {
-          addys.Rs.push(r)
-          
           r.c[0].out.forEach(t => {
             if (t.b0) {
               if (t.b0.op) {
@@ -65,10 +62,11 @@ class Home extends React.Component {
 
                   (t.str.split(' ')).forEach(hex => {
                     let ascii = hex2a(hex)
-                    console.log(ascii)
+                    
 
-                    if (nextIsMB) {
-                      console.log("MB User: " + ascii)
+                    if (nextIsMB) { // this is mb_user
+                      // console.log("MB User: " + ascii)
+                      mbUsers.add(ascii)
                       nextIsMB = false
                     }
 
@@ -80,19 +78,27 @@ class Home extends React.Component {
               }
             }
           })
+           //console.log(mbUsers)
+           mbUsers = Array.from(mbUsers)
+           //console.log(mbUsers)
       });
     });
-    return addys
+    console.log(mbUsers)
+    return {"users": mbUsers}
   }
 
   
 
   render(){
+    //console.log(this.props)
     return (
       <div>
         <span>hello</span>
         <div>
-          this: {this.props.Rs.c}
+        {this.props.users.forEach(u => {
+          //console.log(u);
+          <a href="#">{u.toString()}</a>
+        })}
         </div>
         
         <style jsx>{`
