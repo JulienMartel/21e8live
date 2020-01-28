@@ -1,37 +1,7 @@
-import { useRouter } from 'next/router';
-import Nav from './../../components/nav'
-import Link from 'next/link';
-
-
-const Key = ({ arrTxData }) => {
-    const router = useRouter();
-    console.log(arrTxData)
-    if (arrTxData > 0) {arrTxData[0].isFirst = true}
-
-    const arrOfInstances = []
-
-    arrTxData.forEach(tx => {   
-    
-        let dateFormatted = new Date(tx.blk.t * 1000)
-
-        arrOfInstances.push(
-            <Link href="#">
-                <li key={tx.tx.h + tx.out[0].s16} className="txInstanceContainer">
-                    <div className="userDate">
-                        <span>
-                            MB user: {tx.out[0].s16}
-                        </span>
-                        <span>{dateFormatted.toLocaleString()}</span>
-                    </div>
-                {tx.tx.h}
-                </li>
-            </Link>
-            
-        )
-    })
-
+const User = () => {
     return (
-        <main className="main">
+        <div>
+            <main className="main">
             <div className="container">
                 <Nav />
                 <h4>{router.query.key_21e8}</h4>
@@ -42,15 +12,12 @@ const Key = ({ arrTxData }) => {
             </div>
 
             <style global jsx>{`
-                a {
-                    color: black;
-                    text-decoration-color: black;
-                }
+
 
                 ul {
                     margin: 0;
-                    padding: 0;
-                    border-top: px solid black;
+                    padding: 15px 0 0 0;
+                    border-top: 1px solid black;
                 }
 
                 h5 {
@@ -62,30 +29,20 @@ const Key = ({ arrTxData }) => {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                }
-
-                .container {
-                    min-width: 600px;
+                    min-width: min-content;
                 }
 
                 .txInstanceContainer {
-                    margin: 10px 0;
-                    padding: 10px;
+                    padding: 20px 0;
                     list-style: none;
                     width: min-content;
                     border-bottom: 1px solid lightgrey;
-                    width: calc(100% - 20px);
-                    border-radius: 15px;
-
 
                 }
 
-                .txInstanceContainer:hover, .txInstanceContainer:active {
-                    background-color: #f1eeee;
-                    cursor: pointer;
+                .txInstanceContainer + .txInstanceContainer {
+                    border-bottom: 0px;
                 }
-
-
 
                 .userDate {
                     display: flex;
@@ -95,6 +52,7 @@ const Key = ({ arrTxData }) => {
                 }
             `}</style>
         </main>
+        </div>
     )
 }
 
@@ -135,7 +93,7 @@ async function goGetTxs(address) {
     return json;
 }
 
-Key.getInitialProps = async context => {
+User.getInitialProps = async context => {
     const key = context.query.key_21e8
     console.log(key)
 
@@ -144,5 +102,6 @@ Key.getInitialProps = async context => {
     return { arrTxData: [...txInfo.c] }
 }
 
-export default Key
 
+
+export default User

@@ -1,56 +1,94 @@
 import React from 'react'
 import Link from 'next/link'
+import Router from 'next/router'
 
-const links = [
-  { href: 'https://zeit.co/now', label: 'ZEIT' },
-  { href: 'https://github.com/zeit/next.js', label: 'GitHub' },
-].map(link => ({
-  ...link,
-  key: `nav-link-${link.href}-${link.label}`,
-}))
 
-const Nav = () => (
-  <nav>
-    <ul>
-      <li>
-        <Link href="/">
-          <a>Home</a>
-        </Link>
-      </li>
-      {links.map(({ key, href, label }) => (
-        <li key={key}>
-          <a href={href}>{label}</a>
-        </li>
-      ))}
-    </ul>
+class Nav extends React.Component {
+  state = {
+    query: ""
+  }
 
-    <style jsx>{`
-      :global(body) {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
-          Helvetica, sans-serif;
-      }
-      nav {
-        text-align: center;
-      }
-      ul {
-        display: flex;
-        justify-content: space-between;
-      }
-      nav > ul {
-        padding: 4px 16px;
-      }
-      li {
-        display: flex;
-        padding: 6px 8px;
-      }
-      a {
-        color: #067df7;
-        text-decoration: none;
-        font-size: 13px;
-      }
-    `}</style>
-  </nav>
-)
+  updateQuery = (e) => {
+    console.log(e)
+    this.setState({query: e.target.value})
+  }
+
+  submit = (e) => {
+    e.preventDefault()
+    let query = this.state.query
+    Router.push('/key/' + query)
+    this.setState({query: ""})
+  }
+
+  render() {
+    console.log(this.state)
+    return (
+      <nav>
+        <div className="searchAndLogo">
+          <div className="logo">
+            <h2>21explorer</h2>
+          </div>
+          <form onSubmit={(e) => this.submit(e)}>
+            <input placeholder="Search 21e800... world key" value={this.state.query} onChange={e => this.updateQuery(e)}></input>
+          </form>
+        </div>
+  
+        <style jsx>{`
+          :global(body) {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
+              Helvetica, sans-serif;
+          }
+
+          :global(a) {
+            color: black;
+            text-decoration-color: black;
+          }
+
+          nav {
+            background-color: lightsteelblue;
+            padding: 0 10px;
+          }
+
+          h2 {
+            margin: 10px 0
+          }
+
+          .searchAndLogo {
+            display: flex;
+            flex-direction: column;
+            
+            align-items: center;
+
+          }
+
+          form {
+            display: flex;
+            flex-direction: row;
+            justify-content: center; 
+            align-items: center; 
+            height: 47px;
+            width: 100%;
+          }
+
+          input {
+            height: 60%;
+            width: 100%;
+            background-color: inherit;
+            border: 2px solid black;
+            border-radius: 9px;
+            padding: 0 8px
+            
+          }
+
+          input:focus {
+            outline: none;
+          }
+          
+        `}</style>
+      </nav>
+    )
+  }
+}
 
 export default Nav
