@@ -20,16 +20,22 @@ class Nav extends React.Component {
     this.setState({query: ""})
   }
 
+  randomRGB = () => {
+    var o = Math.round, r = Math.random, s = 255;
+    return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+  }
+
   render() {
     console.log(this.state)
+    
     return (
       <nav>
         <div className="searchAndLogo">
           <div className="logo">
-            <h2>21explorer</h2>
+            <Link href="/"><h2 className="logo">21explorer</h2></Link>
           </div>
           <form onSubmit={(e) => this.submit(e)}>
-            <input placeholder="Search 21e800... world key" value={this.state.query} onChange={e => this.updateQuery(e)}></input>
+            <input placeholder="Search 21e8 world key" value={this.state.query} onChange={e => this.updateQuery(e)}></input>
           </form>
         </div>
   
@@ -45,8 +51,12 @@ class Nav extends React.Component {
             text-decoration-color: black;
           }
 
+          .logo:hover {
+            cursor: pointer;
+          }
+
           nav {
-            background-color: lightsteelblue;
+            background-color: ${this.randomRGB()};
             padding: 0 10px;
           }
 
@@ -80,6 +90,9 @@ class Nav extends React.Component {
             padding: 0 8px
             
           }
+
+          input::placeholder { color: #404040; }
+
 
           input:focus {
             outline: none;

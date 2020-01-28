@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
 import Nav from './../../components/nav'
 import Link from 'next/link';
+import fetch from 'isomorphic-unfetch';
+
 
 
 const Key = ({ arrTxData }) => {
@@ -15,7 +17,7 @@ const Key = ({ arrTxData }) => {
         let dateFormatted = new Date(tx.blk.t * 1000)
 
         arrOfInstances.push(
-            <Link href={"/tx/" + tx.tx.h}>
+            <Link key={tx.tx.h + tx.out[0].s16} href={"/tx/" + tx.tx.h}>
                 <li key={tx.tx.h + tx.out[0].s16} className="txInstanceContainer">
                     <div className="userDate">
                         <span>
@@ -23,7 +25,7 @@ const Key = ({ arrTxData }) => {
                         </span>
                         <span>{dateFormatted.toLocaleString()}</span>
                     </div>
-                {tx.tx.h}
+                <div className="hash">{tx.tx.h}</div>
                 </li>
             </Link>
             
@@ -36,21 +38,39 @@ const Key = ({ arrTxData }) => {
                 <Nav />
                 <h4>{router.query.key_21e8}</h4>
                 <ul className="allInstanceContainer">
-                    <lh><h5>Twetch instances:</h5></lh>
-                    <span className="hash">{arrOfInstances}</span>
+                    <h5>Twetch instances:</h5>
+                    {arrOfInstances}
                 </ul>
             </div>
 
             <style global jsx>{`
+                * {
+                    max-width: 100% !important;
+                }
+                body {
+                    width: 100%;
+                }
+
+                .hash {
+                    max-width: 100%;
+                    overflow-wrap: break-word;
+                }
+
                 a {
                     color: black;
                     text-decoration: none;
                 }
 
+                h4 {
+                    max-width: 100%;
+                    overflow-wrap: break-word;
+                }
+
                 ul {
                     margin: 0;
                     padding: 0;
-                    border-top: px solid black;
+                    border-top: 1px solid black;
+                    max-width: 100%;
                 }
 
                 h5 {
@@ -92,6 +112,17 @@ const Key = ({ arrTxData }) => {
                     flex-direction: row;
                     justify-content: space-between;
                     margin-bottom: 10px;
+                }
+
+                @media (max-width: 600px) {
+                    .container {
+                        width: 100%;
+                        min-width: unset;
+                    }
+
+                    .allInstanceContainer, h4 {
+                        padding: 0 10px;
+                    }
                 }
             `}</style>
         </main>

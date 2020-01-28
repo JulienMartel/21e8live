@@ -1,5 +1,6 @@
 import Nav from './../../components/nav'
 import { useRouter } from 'next/router';
+import fetch from 'isomorphic-unfetch';
 
 
 const Tx = ({ arrTxData }) => {
@@ -34,7 +35,7 @@ const Tx = ({ arrTxData }) => {
             <main className="main">
             <div className="container">
                 <Nav />
-                <h4>{router.query.key_21e8}</h4>
+                <h4 className="hash">{router.query.txHash}</h4>
                 <ul className="allInstanceContainer">
                     <h5>Linked to:</h5>
                     <span className="hash">{arrOfInstances}</span>
@@ -42,15 +43,33 @@ const Tx = ({ arrTxData }) => {
             </div>
 
             <style global jsx>{`
+                * {
+                    max-width: 100% !important;
+                }
+                body {
+                    width: 100%;
+                }
+
+                .hash {
+                    max-width: 100%;
+                    overflow-wrap: break-word;
+                }
+
                 a {
                     color: black;
                     text-decoration: none;
                 }
 
+                h4 {
+                    max-width: 100%;
+                    overflow-wrap: break-word;
+                }
+
                 ul {
                     margin: 0;
                     padding: 0;
-                    border-top: px solid black;
+                    border-top: 1px solid black;
+                    max-width: 100%;
                 }
 
                 h5 {
@@ -80,10 +99,6 @@ const Tx = ({ arrTxData }) => {
 
                 }
 
-                .txInstanceContainer:hover + .hash {
-                    text-decoration: underline;
-                }
-
                 .txInstanceContainer:hover, .txInstanceContainer:active {
                     background-color: #f1eeee;
                     cursor: pointer;
@@ -96,6 +111,17 @@ const Tx = ({ arrTxData }) => {
                     flex-direction: row;
                     justify-content: space-between;
                     margin-bottom: 10px;
+                }
+
+                @media (max-width: 600px) {
+                    .container {
+                        width: 100%;
+                        min-width: unset;
+                    }
+
+                    .allInstanceContainer, h4 {
+                        padding: 0 10px;
+                    }
                 }
             `}</style>
         </main>
