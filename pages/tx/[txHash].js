@@ -1,22 +1,19 @@
-import { useRouter } from 'next/router';
 import Nav from './../../components/nav'
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 
-const Key = ({ arrTxData }) => {
-    const router = useRouter();
+const Tx = ({ arrTxData }) => {
+    const router = useRouter()
     console.log(arrTxData)
-    if (arrTxData > 0) {arrTxData[0].isFirst = true}
-
     const arrOfInstances = []
 
     arrTxData.forEach(tx => {   
     
         let dateFormatted = new Date(tx.blk.t * 1000)
-
+        console.log(tx.tx.h)
         arrOfInstances.push(
-            <Link href={"/tx/" + tx.tx.h}>
-                <li key={tx.tx.h + tx.out[0].s16} className="txInstanceContainer">
+            <a target="__blank" key={tx.tx.h + tx.out[0].s16} href={"https://twetch.app/t/" + tx.tx.h }>
+                <li className="txInstanceContainer">
                     <div className="userDate">
                         <span>
                             MB user: {tx.out[0].s16}
@@ -25,18 +22,21 @@ const Key = ({ arrTxData }) => {
                     </div>
                 {tx.tx.h}
                 </li>
-            </Link>
+            </a>
             
         )
     })
 
+    
     return (
-        <main className="main">
+        
+        <div>
+            <main className="main">
             <div className="container">
                 <Nav />
                 <h4>{router.query.key_21e8}</h4>
                 <ul className="allInstanceContainer">
-                    <lh><h5>Twetch instances:</h5></lh>
+                    <h5>Linked to:</h5>
                     <span className="hash">{arrOfInstances}</span>
                 </ul>
             </div>
@@ -80,6 +80,10 @@ const Key = ({ arrTxData }) => {
 
                 }
 
+                .txInstanceContainer:hover + .hash {
+                    text-decoration: underline;
+                }
+
                 .txInstanceContainer:hover, .txInstanceContainer:active {
                     background-color: #f1eeee;
                     cursor: pointer;
@@ -95,6 +99,7 @@ const Key = ({ arrTxData }) => {
                 }
             `}</style>
         </main>
+        </div>
     )
 }
 
@@ -103,9 +108,7 @@ function queryForAddress(address) {
         v: 3,
         q: {
             find: { 
-                "out.b0": { op: 106 }, 
                 $text: { $search: address },
-                "out.s22": "twetch"
             },
             sort: { "blk.i": 1 },
             limit: 10
@@ -135,14 +138,15 @@ async function goGetTxs(address) {
     return json;
 }
 
-Key.getInitialProps = async context => {
-    const key = context.query.key_21e8
-    console.log(key)
+Tx.getInitialProps = async context => {
+    const txHash = context.query.txHash
+    console.log(txHash)
 
-    const txInfo = await goGetTxs(key)
+    const txInfo = await goGetTxs(txHash)
     console.log(txInfo)
     return { arrTxData: [...txInfo.c] }
 }
 
-export default Key
 
+
+export default Tx
