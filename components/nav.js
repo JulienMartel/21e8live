@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
+import Head from 'next/head'
 
 
 class Nav extends React.Component {
@@ -30,6 +31,9 @@ class Nav extends React.Component {
     
     return (
       <nav>
+        <Head>
+          <title>21explorer</title>
+        </Head>
         <div className="searchAndLogo">
           <div className="logo">
             <Link href="/"><h2 className="logo">21explorer</h2></Link>
@@ -91,7 +95,7 @@ class Nav extends React.Component {
             
           }
 
-          input::placeholder { color: #404040; }
+          input::placeholder { color: black; }
 
 
           input:focus {

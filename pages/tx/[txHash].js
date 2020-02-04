@@ -137,7 +137,7 @@ function queryForAddress(address) {
                 $text: { $search: address },
             },
             sort: { "blk.i": 1 },
-            limit: 10
+            limit: 20
         }
     };
     return query;

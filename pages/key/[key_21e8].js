@@ -15,21 +15,46 @@ const Key = ({ arrTxData }) => {
     arrTxData.forEach(tx => {   
     
         let dateFormatted = new Date(tx.blk.t * 1000)
+        
+        let mbUserNumberKey = undefined;
+        
+        let mbUserKey =  Object.keys(tx.out[0]).find(key => tx.out[0][key] === "mb_user")
+        if (mbUserKey) {
+            mbUserNumberKey = "s" + (Number.parseInt(mbUserKey.substring(1)) + 1)
 
-        arrOfInstances.push(
-            <Link key={tx.tx.h + tx.out[0].s16} href={"/tx/" + tx.tx.h}>
-                <li key={tx.tx.h + tx.out[0].s16} className="txInstanceContainer">
-                    <div className="userDate">
-                        <span>
-                            MB user: {tx.out[0].s16}
-                        </span>
-                        <span>{dateFormatted.toLocaleString()}</span>
-                    </div>
-                <div className="hash">{tx.tx.h}</div>
-                </li>
-            </Link>
+            arrOfInstances.push(
+                <Link key={tx.tx.h + tx.out[0].s16} href={"/tx/" + tx.tx.h}>
+                    <li key={tx.tx.h + tx.out[0].s16} className="txInstanceContainer">
+                        <div className="userDate">
+                            <span>
+                                MB user: {tx.out[0][mbUserNumberKey]}
+                            </span>
+                            <span>{dateFormatted.toLocaleString()}</span>
+                        </div>
+                    <div className="hash">{tx.tx.h}</div>
+                    </li>
+                </Link>
+                
+            )
+        }
+
+        // split the non-twetch and twetch instances
+        
+        // arrOfInstances.push(
+        //     <Link key={tx.tx.h + tx.out[0].s16} href={"/tx/" + tx.tx.h}>
+        //         <li key={tx.tx.h + tx.out[0].s16} className="txInstanceContainer">
+        //             <div className="userDate">
+        //                 <span>
+        //                     MB user: {tx.out[0][mbUserNumberKey]}
+        //                 </span>
+        //                 <span>{dateFormatted.toLocaleString()}</span>
+        //             </div>
+        //         <div className="hash">{tx.tx.h}</div>
+        //         </li>
+        //     </Link>
             
-        )
+        // )
+        
     })
 
     return (
@@ -134,9 +159,7 @@ function queryForAddress(address) {
         v: 3,
         q: {
             find: { 
-                "out.b0": { op: 106 }, 
                 $text: { $search: address },
-                "out.s22": "twetch"
             },
             sort: { "blk.i": 1 },
             limit: 10
